@@ -1,0 +1,5 @@
+input:
+    content
+    style code (need style encoder)
+    label stroke, four corner, (three corner)
+
