@@ -14,17 +14,18 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from tensorboardX import SummaryWriter
 from torch.cuda import amp
 
-from utils.utils import get_loader
+from utils.utils import get_loader, read_spilt_data
 
 def parser():
     parser = argparse.ArgumentParser()
     # data
-    parser.add_argument("--data_path", help='path to image folder')
+    parser.add_argument("--data_path", default='/data/Font/stroke_and_corner_4807', help='path to image folder')
     
     # label
     parser.add_argument("--three_corner", default='cfgs/three_corner.json', help='path to three_corner.json')
     parser.add_argument("--four_corner", default='cfgs/four_corner.json', help='path to four_corner.json')
     parser.add_argument("--stroke", default='cfgs/stroke_count.json', help='path to stroke_count.json')
+    parser.add_argument("--unicode_path", default='cfgs/word_4807.txt', help="path to unicode set")
     # parser.add_argument("--stroke", default='cfgs/stroke_frequency.json', help='path to stroke_frequency.json')
     
     # setting
@@ -82,10 +83,17 @@ def train(cfgs, ddp_gpu=-1):
 
 
 if __name__ == '__main__':
+
+
+    print("first")
     cfgs = parser()
-    if cfgs.ddp:
-        n_gpus_per_node = torch.cuda.device_count()
-        world_size = n_gpus_per_node
-        mp.spawn(train_ddp, nprocs=n_gpus_per_node, args=(world_size, cfgs))
-    else: 
-        train()
+    # print(cfgs)
+    train_font, val_font, num_classes = read_spilt_data(cfgs.data_path)
+    print(train_font)
+    
+    # if cfgs.ddp:
+    #     n_gpus_per_node = torch.cuda.device_count()
+    #     world_size = n_gpus_per_node
+    #     mp.spawn(train_ddp, nprocs=n_gpus_per_node, args=(world_size, cfgs))
+    # else: 
+    #     train()

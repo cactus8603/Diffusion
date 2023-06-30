@@ -1,5 +1,5 @@
 input:
     content
-    style code (need style encoder)
+    style code (need style encoder) # efficientnet_v2m 226 mb
     label stroke, four corner, (three corner)
 
